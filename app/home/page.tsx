@@ -281,7 +281,7 @@ export default function HomePage() {
             <a href="#" className="hover:text-white transition-colors">Terms</a>
             <a href="#" className="hover:text-white transition-colors">Contact</a>
           </div>
-          <span>optilogix.qiroxstudio.online</span>
+          <span>Made by <span className="text-white/50 font-medium">Khaled</span> in <span className="text-violet-400 font-medium">Medrezz Group</span></span>
         </div>
       </footer>
     </div>

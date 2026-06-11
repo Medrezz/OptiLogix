@@ -22,6 +22,9 @@
     "react-dom": "^19.2.7",
     "sharp": "^0.33.5"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "devDependencies": {
     "@types/node": "^20.19.43",
     "@types/react": "^19.2.17",

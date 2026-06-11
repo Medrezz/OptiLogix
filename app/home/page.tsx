@@ -106,7 +106,8 @@ export default function HomePage() {
 
           <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-10 animate-fadeInUp" style={{animationDelay:'0.2s',animationFillMode:'both'}}>
             One platform for chat, vision analysis, and image generation. Powered by the world's most capable reasoning AI — Moonshot Kimi K2.
-            <span className="text-violet-300"> Chat free forever. </span>Images start at 5 SAR.
+            <span className="text-violet-300"> Chat free forever
+</span>Images start at 5 SAR.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp" style={{animationDelay:'0.3s',animationFillMode:'both'}}>

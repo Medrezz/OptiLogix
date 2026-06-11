@@ -19,7 +19,9 @@
     "next-auth": "^4.24.14",
     "openai": "^4.104.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "optionalDependencies": {
     "sharp": "^0.33.5"
   },
   "engines": {

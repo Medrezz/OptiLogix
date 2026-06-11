@@ -10,6 +10,10 @@ interface ChatInterfaceProps {
   onAuraStateChange: (state: 'idle' | 'thinking' | 'generating') => void
 }
 
+function generateSessionId() {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36)
+}
+
 export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps) {
   const [mode, setMode] = useState<Mode>('chat')
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -18,9 +22,39 @@ export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [generatedImages, setGeneratedImages] = useState<{ url: string; prompt: string; timestamp: number }[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [sessionId, setSessionId] = useState<string>('')
+  const [historyLoaded, setHistoryLoaded] = useState(false)
 
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Init session and load history
+  useEffect(() => {
+    let sid = sessionStorage.getItem('optilogix_session')
+    if (!sid) {
+      sid = generateSessionId()
+      sessionStorage.setItem('optilogix_session', sid)
+    }
+    setSessionId(sid)
+
+    fetch(`/api/history?sessionId=${sid}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.messages?.length) {
+          const restored: ChatMessage[] = data.messages.map((m: { role: 'user' | 'assistant'; content: string }, i: number) => ({
+            id: `history-${i}`,
+            role: m.role,
+            content: m.content,
+          }))
+          setMessages(restored)
+        }
+        if (data.images?.length) {
+          setGeneratedImages(data.images)
+        }
+      })
+      .catch(() => {})
+      .finally(() => setHistoryLoaded(true))
+  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -44,6 +78,7 @@ export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps)
       uploadedImage: selectedImage || undefined,
     }
 
+    const imageToSend = selectedImage
     const newMessages = [...messages, userMsg]
     setMessages(newMessages)
     setInput('')
@@ -72,7 +107,8 @@ export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps)
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: apiHistory,
-          imageBase64: selectedImage || null,
+          imageBase64: imageToSend || null,
+          sessionId,
         }),
       })
 
@@ -92,60 +128,64 @@ export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps)
         const lines = chunk.split('\n')
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue
-          const data = JSON.parse(line.slice(6))
-          if (data.delta) {
-            fullText += data.delta
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === assistantId ? { ...m, content: fullText } : m
-              )
-            )
-          }
-          if (data.done) {
-            const imageMatch = fullText.match(/\[IMAGE_GENERATION_REQUEST\]:\s*(.+)/s)
-            if (imageMatch) {
-              onAuraStateChange('generating')
-              const prompt = imageMatch[1].trim()
+          try {
+            const data = JSON.parse(line.slice(6))
+            if (data.delta) {
+              fullText += data.delta
               setMessages((prev) =>
                 prev.map((m) =>
-                  m.id === assistantId
-                    ? { ...m, content: 'Generating your image...', isStreaming: true }
-                    : m
+                  m.id === assistantId ? { ...m, content: fullText } : m
                 )
               )
-              try {
-                const imgRes = await fetch('/api/generate-image', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ prompt }),
-                })
-                const imgData = await imgRes.json()
-                if (imgData.imageUrl) {
-                  const imgContent = `Here's your generated image!\n[GENERATED_IMAGE]:${imgData.imageUrl}`
-                  setMessages((prev) =>
-                    prev.map((m) =>
-                      m.id === assistantId ? { ...m, content: imgContent, isStreaming: false } : m
-                    )
-                  )
-                  setGeneratedImages((prev) => [
-                    { url: imgData.imageUrl, prompt, timestamp: Date.now() },
-                    ...prev,
-                  ])
-                  if (mode !== 'canvas') setMode('canvas')
-                } else {
-                  throw new Error(imgData.error || 'Image generation failed')
-                }
-              } catch (imgErr: unknown) {
-                const msg = imgErr instanceof Error ? imgErr.message : 'Image generation failed'
+            }
+            if (data.done) {
+              const imageMatch = fullText.match(/\[IMAGE_GENERATION_REQUEST\]:\s*(.+)/s)
+              if (imageMatch) {
+                onAuraStateChange('generating')
+                const prompt = imageMatch[1].trim()
                 setMessages((prev) =>
                   prev.map((m) =>
                     m.id === assistantId
-                      ? { ...m, content: `Image generation failed: ${msg}`, isStreaming: false }
+                      ? { ...m, content: '✨ Generating your image...', isStreaming: true }
                       : m
                   )
                 )
+                try {
+                  const imgRes = await fetch('/api/generate-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt, sessionId }),
+                  })
+                  const imgData = await imgRes.json()
+                  if (imgData.imageUrl) {
+                    const imgContent = `Here's your generated image!\n[GENERATED_IMAGE]:${imgData.imageUrl}`
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === assistantId ? { ...m, content: imgContent, isStreaming: false } : m
+                      )
+                    )
+                    setGeneratedImages((prev) => [
+                      { url: imgData.imageUrl, prompt, timestamp: Date.now() },
+                      ...prev,
+                    ])
+                    if (mode !== 'canvas') setMode('canvas')
+                  } else {
+                    throw new Error(imgData.error || 'Image generation failed')
+                  }
+                } catch (imgErr: unknown) {
+                  const msg = imgErr instanceof Error ? imgErr.message : 'Image generation failed'
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === assistantId
+                        ? { ...m, content: `Image generation failed: ${msg}`, isStreaming: false }
+                        : m
+                    )
+                  )
+                }
               }
             }
+          } catch {
+            // skip malformed SSE lines
           }
         }
       }
@@ -161,7 +201,7 @@ export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps)
       setIsLoading(false)
       onAuraStateChange('idle')
     }
-  }, [input, selectedImage, messages, isLoading, mode, onAuraStateChange])
+  }, [input, selectedImage, messages, isLoading, mode, sessionId, onAuraStateChange])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -192,8 +232,23 @@ export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps)
                   />
                 ))}
               </div>
-              <span>Thinking...</span>
+              <span>{mode === 'canvas' ? 'Creating...' : 'Thinking...'}</span>
             </div>
+          )}
+          {historyLoaded && messages.length > 0 && (
+            <button
+              onClick={() => {
+                const newSid = generateSessionId()
+                sessionStorage.setItem('optilogix_session', newSid)
+                setSessionId(newSid)
+                setMessages([])
+                setGeneratedImages([])
+              }}
+              className="text-xs text-white/30 hover:text-white/60 transition-colors px-2 py-1 rounded-lg hover:bg-white/5"
+              title="New session"
+            >
+              + New chat
+            </button>
           )}
         </div>
       </div>
@@ -211,7 +266,7 @@ export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps)
           )}
 
           <div className="flex-1 overflow-y-auto space-y-4 pr-1 min-h-0">
-            {messages.length === 0 && (
+            {messages.length === 0 && historyLoaded && (
               <div className="flex flex-col items-center justify-center h-full text-center gap-6 py-12">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center">
                   <svg className="w-8 h-8 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -227,7 +282,7 @@ export default function ChatInterface({ onAuraStateChange }: ChatInterfaceProps)
                   <p className="text-sm text-white/40 max-w-xs">
                     {mode === 'chat' && 'Ask complex questions, get deep answers across any domain.'}
                     {mode === 'vision' && 'Upload an image and let me analyze it in full detail.'}
-                    {mode === 'canvas' && 'Describe what you want to create, and I\'ll generate it.'}
+                    {mode === 'canvas' && "Describe what you want to create, and I'll generate it."}
                   </p>
                 </div>
                 {mode === 'chat' && (

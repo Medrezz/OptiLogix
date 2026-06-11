@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import AuraBackground from '@/components/AuraBackground'
 import ChatInterface from '@/components/ChatInterface'
+
+const AuraBackground = dynamic(() => import('@/components/AuraBackground'), { ssr: false })
 
 export default function Home() {
   const [auraState, setAuraState] = useState<'idle' | 'thinking' | 'generating'>('idle')

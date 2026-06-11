@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type AuraState = 'idle' | 'thinking' | 'generating'
 
@@ -11,9 +11,14 @@ interface AuraBackgroundProps {
 export default function AuraBackground({ state }: AuraBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animRef = useRef<number>(0)
-  const timeRef = useRef<number>(0)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
@@ -33,9 +38,7 @@ export default function AuraBackground({ state }: AuraBackgroundProps) {
     ]
 
     const draw = (ts: number) => {
-      timeRef.current = ts / 1000
-      const t = timeRef.current
-
+      const t = ts / 1000
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = '#050508'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -68,12 +71,13 @@ export default function AuraBackground({ state }: AuraBackgroundProps) {
     }
 
     animRef.current = requestAnimationFrame(draw)
-
     return () => {
       cancelAnimationFrame(animRef.current)
       window.removeEventListener('resize', resize)
     }
-  }, [state])
+  }, [state, mounted])
+
+  if (!mounted) return <div className="fixed inset-0" style={{ background: '#050508', zIndex: 0 }} />
 
   return (
     <canvas

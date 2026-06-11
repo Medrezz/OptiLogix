@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getOpenAIClient } from '@/lib/moonshot'
+import { connectDB } from '@/lib/mongodb'
+import { GeneratedGraphic } from '@/lib/models'
 
 export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt } = await req.json()
+    const { prompt, sessionId } = await req.json()
 
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 })
@@ -24,6 +26,18 @@ export async function POST(req: NextRequest) {
     const imageUrl = response.data[0]?.url
     if (!imageUrl) {
       return NextResponse.json({ error: 'No image returned' }, { status: 500 })
+    }
+
+    // Save generated image record to MongoDB
+    try {
+      await connectDB()
+      await GeneratedGraphic.create({
+        sessionId: sessionId || 'anonymous',
+        prompt,
+        imageUrl,
+      })
+    } catch (dbErr) {
+      console.warn('MongoDB save failed (non-fatal):', dbErr)
     }
 
     return NextResponse.json({ imageUrl, revisedPrompt: response.data[0]?.revised_prompt })

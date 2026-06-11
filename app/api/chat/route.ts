@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getMoonshotClient, SYSTEM_PROMPT, Message } from '@/lib/moonshot'
+import { connectDB } from '@/lib/mongodb'
+import { Conversation } from '@/lib/models'
 
 export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, imageBase64 } = await req.json()
+    const { messages, imageBase64, sessionId } = await req.json()
 
     const client = getMoonshotClient()
 
@@ -50,6 +52,30 @@ export async function POST(req: NextRequest) {
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta })}\n\n`))
           }
         }
+
+        // Save conversation to MongoDB
+        try {
+          await connectDB()
+          const userMsg = messages[messages.length - 1]
+          if (sessionId && userMsg) {
+            await Conversation.findOneAndUpdate(
+              { sessionId },
+              {
+                $push: {
+                  messages: [
+                    { role: 'user', content: userMsg.content },
+                    { role: 'assistant', content: fullText },
+                  ],
+                },
+                $set: { updatedAt: new Date() },
+              },
+              { upsert: true, new: true }
+            )
+          }
+        } catch (dbErr) {
+          console.warn('MongoDB save failed (non-fatal):', dbErr)
+        }
+
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, fullText })}\n\n`))
         controller.close()
       },

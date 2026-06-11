@@ -3,9 +3,8 @@
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import ChatInterface from '@/components/ChatInterface'
-
 const AuraBackground = dynamic(() => import('@/components/AuraBackground'), { ssr: false })
+const ChatInterface = dynamic(() => import('@/components/ChatInterface'), { ssr: false })
 
 export default function Home() {
   const [auraState, setAuraState] = useState<'idle' | 'thinking' | 'generating'>('idle')

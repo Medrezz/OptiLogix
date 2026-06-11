@@ -7,7 +7,7 @@ export function getMoonshotClient() {
   }
   return new OpenAI({
     apiKey,
-    baseURL: 'https://api.moonshot.cn/v1',
+    baseURL: 'https://api.moonshot.ai/v1',
   })
 }
 

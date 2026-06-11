@@ -48,13 +48,20 @@ outputType = "console"
 
 [[ports]]
 localPort = 5000
-externalPort = 80
+externalPort = 5000
 
 [[ports]]
 localPort = 8000
-externalPort = 8000
+externalPort = 80
 
 [deployment]
 deploymentTarget = "autoscale"
 run = ["npm", "run", "start"]
 build = ["npm", "run", "build"]
+
+[userenv]
+
+[userenv.shared]
+NEXTAUTH_URL = "https://75fc40a9-b2d1-45f7-9567-4e7e216a14b0-00-2jvkljy0uiwti.sisko.replit.dev"
+BACKEND_URL = "http://localhost:8000"
+NEXT_PUBLIC_BACKEND_URL = "http://localhost:8000"

@@ -65,3 +65,7 @@ build = ["npm", "run", "build"]
 NEXTAUTH_URL = "https://75fc40a9-b2d1-45f7-9567-4e7e216a14b0-00-2jvkljy0uiwti.sisko.replit.dev"
 BACKEND_URL = "http://localhost:8000"
 NEXT_PUBLIC_BACKEND_URL = "http://localhost:8000"
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 120000

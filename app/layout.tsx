@@ -1,28 +1,21 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import SessionProviderWrapper from '@/components/SessionProviderWrapper'
 
 export const metadata: Metadata = {
   title: 'OptiLogix — AI Workspace',
   description: 'Premium multimodal AI workspace powered by Moonshot AI. Chat, analyze images, and generate stunning visuals.',
   manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'OptiLogix',
-  },
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'OptiLogix' },
 }
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#050508',
+  themeColor: '#03030a',
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -30,9 +23,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <SessionProviderWrapper>{children}</SessionProviderWrapper>
+      </body>
     </html>
   )
 }

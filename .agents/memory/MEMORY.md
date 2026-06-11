@@ -1,0 +1,3 @@
+- [OptiLogix Platform Architecture](platform-arch.md) — full SaaS AI workspace; Next.js 15 (port 5000) + PHP 8.2 (port 8000) + MongoDB + SQLite
+- [Auth Setup](auth-setup.md) — NextAuth.js with Google/Apple/Credentials; PHP JWT for business logic; user must provide Google & Apple credentials
+- [Free Tier Logic](free-tier.md) — chat is always free (no auth); image generation requires login, 3 free then 50 coins each

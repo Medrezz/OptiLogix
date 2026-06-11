@@ -1,72 +1,55 @@
 'use client'
-
-import { useState } from 'react'
-import dynamic from 'next/dynamic'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-const AuraBackground = dynamic(() => import('@/components/AuraBackground'), { ssr: false })
-const ChatInterface = dynamic(() => import('@/components/ChatInterface'), { ssr: false })
 
-export default function Home() {
-  const [auraState, setAuraState] = useState<'idle' | 'thinking' | 'generating'>('idle')
+export default function SplashPage() {
+  const router = useRouter()
+  const [phase, setPhase] = useState(0) // 0=black, 1=logo, 2=text, 3=tagline, 4=fade-out
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 300)
+    const t2 = setTimeout(() => setPhase(2), 900)
+    const t3 = setTimeout(() => setPhase(3), 1500)
+    const t4 = setTimeout(() => setPhase(4), 2800)
+    const t5 = setTimeout(() => router.push('/home'), 3500)
+    return () => [t1,t2,t3,t4,t5].forEach(clearTimeout)
+  }, [router])
 
   return (
-    <main className="relative min-h-screen flex flex-col" style={{ zIndex: 1 }}>
-      <AuraBackground state={auraState} />
+    <div className={`fixed inset-0 flex flex-col items-center justify-center bg-[#03030a] transition-opacity duration-700 ${phase === 4 ? 'opacity-0' : 'opacity-100'}`}>
+      {/* Grid bg */}
+      <div className="absolute inset-0 grid-bg opacity-50" />
 
-      <div className="relative flex flex-col h-screen" style={{ zIndex: 2 }}>
-        <header className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 bg-black/40">
-              <Image
-                src="/logo.png"
-                alt="OptiLogix"
-                width={36}
-                height={36}
-                className="w-full h-full object-cover"
-                priority
-              />
-            </div>
-            <div>
-              <h1 className="text-sm font-bold tracking-tight text-white">
-                optilogix
-                <span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">X</span>
-              </h1>
-              <p className="text-[10px] text-white/30 leading-none mt-0.5">Multimodal AI Workspace</p>
-            </div>
-          </div>
+      {/* Glow orb */}
+      <div className="absolute w-[600px] h-[600px] rounded-full"
+        style={{background:'radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)'}} />
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5">
-              <div className={`w-2 h-2 rounded-full transition-all duration-500 ${
-                auraState === 'idle'
-                  ? 'bg-emerald-400/70'
-                  : auraState === 'thinking'
-                  ? 'bg-violet-400 animate-pulse'
-                  : 'bg-pink-400 animate-pulse'
-              }`} />
-              <span className="text-xs text-white/40 capitalize">
-                {auraState === 'idle' ? 'Ready' : auraState === 'thinking' ? 'Processing...' : 'Creating...'}
-              </span>
-            </div>
-
-            <div className="glass-panel rounded-lg px-3 py-1.5 text-xs text-white/40 hidden sm:block">
-              Kimi K2 · DALL-E 3
-            </div>
-          </div>
-        </header>
-
-        <div className="flex-1 min-h-0 p-4 sm:p-6">
-          <div className="glass-panel rounded-2xl h-full p-4 sm:p-6 max-w-5xl mx-auto">
-            <ChatInterface onAuraStateChange={setAuraState} />
-          </div>
+      {/* Logo */}
+      <div className={`relative transition-all duration-700 ${phase >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
+        <div className="relative w-24 h-24 mx-auto mb-6">
+          <div className="absolute inset-0 rounded-3xl animate-pulse-glow" style={{background:'rgba(124,58,237,0.15)'}} />
+          <Image src="/logo.png" alt="OptiLogix" fill className="object-contain rounded-3xl p-1" priority />
         </div>
-
-        <footer className="flex-shrink-0 flex items-center justify-center gap-4 px-6 py-2 border-t border-white/5">
-          <p className="text-[10px] text-white/20">
-            OptiLogix © 2026 · optilogix.qiroxstudio.online
-          </p>
-        </footer>
       </div>
-    </main>
+
+      {/* Brand name */}
+      <div className={`transition-all duration-700 delay-100 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <h1 className="text-4xl font-bold tracking-tight text-white">
+          optilogix<span className="grad-text">X</span>
+        </h1>
+      </div>
+
+      {/* Tagline */}
+      <div className={`mt-3 transition-all duration-700 delay-200 ${phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <p className="text-sm text-white/40 tracking-widest uppercase">Multimodal AI Workspace</p>
+      </div>
+
+      {/* Loading bar */}
+      <div className={`absolute bottom-12 w-48 h-0.5 bg-white/5 rounded-full overflow-hidden transition-all duration-500 ${phase >= 2 ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500"
+          style={{width: phase >= 3 ? '100%' : phase >= 2 ? '60%' : '20%', transition:'width 1.2s ease'}} />
+      </div>
+    </div>
   )
 }

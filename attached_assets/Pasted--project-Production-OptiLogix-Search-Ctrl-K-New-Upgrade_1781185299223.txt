@@ -1,0 +1,88 @@
+ project
+
+Production
+
+OptiLogix
+
+
+Search
+Ctrl+
+K
+
+New
+
+Upgrade
+
+
+o
+Environment
+OptiLogix
+Events
+Settings
+Monitor
+Logs
+Metrics
+Manage
+Environment
+Shell
+Scaling
+Previews
+Disk
+One-Off Jobs
+
+Changelog
+Invite a friend
+
+Contact support
+Render Status
+Web Service
+OptiLogix
+Node
+Free
+Upgrade your instance
+
+Connect
+
+Manual Deploy
+Service ID:
+srv-d8l9rn7lk1mc73cnj0mg
+
+Medrezz / OptiLogix
+main
+optilogix.qiroxstudio.online
+
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+June 11, 2026 at 4:38 PM
+failed
+4f95f4d
+Add deployment configuration for Render service Add render.yaml file to configure build and start commands for the web service, including environment variables. Replit-Commit-Author: Agent Replit-Commit-Session-Id: 8d85d752-53b3-4ba5-abf4-9184a0e3c6e7 Replit-Commit-Checkpoint-Type: full_checkpoint Replit-Commit-Event-Id: 7abb3e94-fdc9-424a-95bd-e93e1ad5bef9 Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/75fc40a9-b2d1-45f7-9567-4e7e216a14b0/8d85d752-53b3-4ba5-abf4-9184a0e3c6e7/Eqj5Lah Replit-Helium-Checkpoint-Created: true
+
+Rollback
+Exited with status 127 while building your code.
+Read our docs for common ways to troubleshoot your deploy.
+
+All logs
+Search
+Search
+
+Live tail
+
+
+
+==> Cloning from https://github.com/Medrezz/OptiLogix
+==> Checking out commit 4f95f4dcc90b4b2ecefa0943b8f14628a67a4883 in branch main
+==> Requesting Node.js version 20
+==> Using Node.js version 20.20.2 via /opt/render/project/src/.nvmrc
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Installing Node.js version 20.20.2...
+==> Running build command 'npm install; npm run build'...
+npm error Exit handler never called!
+npm error This is an error with npm itself. Please report this error at:
+npm error   <https://github.com/npm/cli/issues>
+npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-06-11T13_39_20_204Z-debug-0.log
+> optilogix@0.1.0 build
+> next build
+sh: 1: next: not found
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys

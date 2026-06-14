@@ -1,0 +1,20 @@
+{
+  "app/home/page.tsx -> @/components/AuraBackground": {
+    "id": 1059,
+    "files": [
+      "static/chunks/59.4716ae066f2735e5.js"
+    ]
+  },
+  "app/workspace/page.tsx -> @/components/AuraBackground": {
+    "id": 1059,
+    "files": [
+      "static/chunks/59.4716ae066f2735e5.js"
+    ]
+  },
+  "app/workspace/page.tsx -> @/components/ChatInterface": {
+    "id": 8503,
+    "files": [
+      "static/chunks/503.c3d1e11eb137e418.js"
+    ]
+  }
+}

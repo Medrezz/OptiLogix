@@ -1,0 +1,15 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/api/generate-image/route": "/api/generate-image",
+  "/api/history/route": "/api/history",
+  "/api/chat/route": "/api/chat",
+  "/admin/page": "/admin",
+  "/admin/god/page": "/admin/god",
+  "/auth/page": "/auth",
+  "/dashboard/developer/page": "/dashboard/developer",
+  "/home/page": "/home",
+  "/dashboard/page": "/dashboard",
+  "/workspace/page": "/workspace",
+  "/page": "/"
+}

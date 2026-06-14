@@ -69,11 +69,11 @@ const handler = NextAuth({
           })
           const data = await res.json()
           if (data.success) {
-            ;(user as Record<string, unknown>).backendToken = data.token
-            ;(user as Record<string, unknown>).role = data.user.role
-            ;(user as Record<string, unknown>).coinBalance = data.user.coin_balance
-            ;(user as Record<string, unknown>).freeImagesUsed = data.user.free_images_used
-            ;(user as Record<string, unknown>).phone = data.user.phone
+            ;(user as unknown as Record<string, unknown>).backendToken = data.token
+            ;(user as unknown as Record<string, unknown>).role = data.user.role
+            ;(user as unknown as Record<string, unknown>).coinBalance = data.user.coin_balance
+            ;(user as unknown as Record<string, unknown>).freeImagesUsed = data.user.free_images_used
+            ;(user as unknown as Record<string, unknown>).phone = data.user.phone
           }
         } catch (e) {
           console.error('OAuth sync error:', e)
@@ -83,11 +83,12 @@ const handler = NextAuth({
     },
     async jwt({ token, user }) {
       if (user) {
-        token.backendToken = (user as Record<string, unknown>).backendToken as string
-        token.role = (user as Record<string, unknown>).role as string
-        token.coinBalance = (user as Record<string, unknown>).coinBalance as number
-        token.freeImagesUsed = (user as Record<string, unknown>).freeImagesUsed as number
-        token.phone = (user as Record<string, unknown>).phone as string
+        const u = user as unknown as Record<string, unknown>
+        token.backendToken = u.backendToken as string
+        token.role = u.role as string
+        token.coinBalance = u.coinBalance as number
+        token.freeImagesUsed = u.freeImagesUsed as number
+        token.phone = u.phone as string
       }
       return token
     },

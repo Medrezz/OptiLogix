@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       quality: 'standard',
     })
 
-    const imageUrl = response.data[0]?.url
+    const imageUrl = response.data?.[0]?.url
     if (!imageUrl) {
       return NextResponse.json({ error: 'No image returned' }, { status: 500 })
     }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       console.warn('MongoDB save failed (non-fatal):', dbErr)
     }
 
-    return NextResponse.json({ imageUrl, revisedPrompt: response.data[0]?.revised_prompt })
+    return NextResponse.json({ imageUrl, revisedPrompt: response.data?.[0]?.revised_prompt })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error'
     console.error('Image generation error:', message)

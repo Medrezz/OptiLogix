@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       messages: (conversation as { messages?: unknown[] } | null)?.messages || [],
-      images: images.map((img: { prompt?: string; imageUrl?: string; createdAt?: Date }) => ({
+      images: (images as unknown as { prompt?: string; imageUrl?: string; createdAt?: Date }[]).map((img) => ({
         prompt: img.prompt,
         url: img.imageUrl,
         timestamp: img.createdAt ? new Date(img.createdAt).getTime() : Date.now(),

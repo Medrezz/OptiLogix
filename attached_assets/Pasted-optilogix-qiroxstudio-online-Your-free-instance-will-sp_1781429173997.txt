@@ -1,0 +1,39 @@
+optilogix.qiroxstudio.online
+
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+June 14, 2026 at 12:25 PM
+failed
+e4a2e52
+Update build process to prevent deployment errors Modify render.yaml to use 'npm ci' for faster and more stable builds, and adjust NODE_OPTIONS to reduce memory usage, preventing deployment failures on free tier. Replit-Commit-Author: Agent Replit-Commit-Session-Id: 43c5adc9-0da5-496a-a125-e45300b3979b Replit-Commit-Checkpoint-Type: full_checkpoint Replit-Commit-Event-Id: 3461ea03-90c9-464c-8791-d5d3f5f7ee31 Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/1688fe5b-483c-4624-9640-4138534677e4/43c5adc9-0da5-496a-a125-e45300b3979b/6xmV5q7 Replit-Helium-Checkpoint-Created: true
+
+Rollback
+Exited with status 217 while building your code.
+Read our docs for common ways to troubleshoot your deploy.
+
+All logs
+Search
+Search logs
+
+Live tail
+
+
+
+==> Downloading cache...
+==> Cloning from https://github.com/Medrezz/OptiLogix
+==> Checking out commit e4a2e5252abd8ad11df64ac8ffb32c75ad6a7f7c in branch main
+==> Downloaded 2.7MB in 1s. Extraction took 0s.
+==> Requesting Node.js version 20
+==> Using Node.js version 20.20.2 via /opt/render/project/src/.nvmrc
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Installing Node.js version 20.20.2...
+==> Running build command 'npm install --no-fund --no-audit'...
+npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /opt/render/project/src/node_modules/chokidar
+npm error dest /opt/render/project/src/node_modules/.chokidar-rq4WI8Kf
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rename '/opt/render/project/src/node_modules/chokidar' -> '/opt/render/project/src/node_modules/.chokidar-rq4WI8Kf'
+npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-06-14T09_25_41_193Z-debug-0.log
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys

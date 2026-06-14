@@ -4,13 +4,13 @@ services:
     runtime: node
     region: oregon
     plan: free
-    buildCommand: npm install --omit=optional --no-fund --no-audit && npm run build
+    buildCommand: npm ci --omit=optional && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: NODE_OPTIONS
-        value: --max-old-space-size=1024
+        value: --max-old-space-size=400
       - key: NEXTAUTH_URL
         sync: false
       - key: NEXTAUTH_SECRET

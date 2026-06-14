@@ -1,0 +1,47 @@
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+June 14, 2026 at 12:20 PM
+failed
+9db9d2d
+Update deployment to prevent build failures on free tier Adjust build command and add node options to ensure successful application deployment. Replit-Commit-Author: Agent Replit-Commit-Session-Id: 43c5adc9-0da5-496a-a125-e45300b3979b Replit-Commit-Checkpoint-Type: full_checkpoint Replit-Commit-Event-Id: bc230717-ae24-4beb-a5eb-d8f17ba57e0b Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/1688fe5b-483c-4624-9640-4138534677e4/43c5adc9-0da5-496a-a125-e45300b3979b/6xmV5q7 Replit-Helium-Checkpoint-Created: true
+
+Rollback
+Exited with status 127 while running your code.
+Read our docs for common ways to troubleshoot your deploy.
+
+All logs
+Search
+Search logs
+
+Live tail
+
+
+
+==> Downloading cache...
+==> Cloning from https://github.com/Medrezz/OptiLogix
+==> Checking out commit 9db9d2d6087b30024d6d68ce3f7f974d3905bf74 in branch main
+==> Downloaded 2.7MB in 0s. Extraction took 0s.
+==> Requesting Node.js version 20
+==> Using Node.js version 20.20.2 via /opt/render/project/src/.nvmrc
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Installing Node.js version 20.20.2...
+==> Running build command 'npm install --no-fund --no-audit'...
+npm error Exit handler never called!
+npm error This is an error with npm itself. Please report this error at:
+npm error   <https://github.com/npm/cli/issues>
+npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-06-14T09_21_33_091Z-debug-0.log
+==> Uploading build...
+==> Uploaded in 1.7s. Compression took 0.9s
+==> Build successful 🎉
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+==> Running 'npm start'
+> optilogix@0.1.0 start
+> next start -p ${PORT:-5000} -H 0.0.0.0
+sh: 1: next: not found
+==> Exited with status 127
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'npm start'
+> optilogix@0.1.0 start
+> next start -p ${PORT:-5000} -H 0.0.0.0
+sh: 1: next: not found
